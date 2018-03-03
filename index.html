@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset='utf-8' />
+		<title>Graffiti Information</title>
+		<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.0/mapbox-gl.js'></script>
+		<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.0/mapbox-gl.css' rel='stylesheet' />
+		<style>
+			body { 
+				margin:0; 
+				padding:0; 
+			}
+			
+			#map {
+				position:absolute; 
+				top:0; 
+				bottom:0; 
+				width:100%; 
+			}
+			
+			.mapboxgl-popup {
+				max-width: 400px;
+				font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+			}
+			
+			.legend-group {
+				font: 11px/16px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+				font-weight: 600;
+				position: absolute;
+				top: 20px;
+				left: 20px;
+				z-index: 1;
+				border-radius: 2px;
+				width: 120px;
+				color: #fff;
+			}
+			
+			.legend-group input[type=checkbox] {
+				display: none;
+			}
+
+			.legend-group label {
+				border-radius: 3px 3px 3px 3px;
+				background-color: #4ea0da;
+				cursor: pointer;
+				padding: 9px;
+				border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+			}
+			
+			.legend-group input[type=checkbox]:hover {
+				background-color: #3386c0;
+			}
+			
+			.legend-group input[type=checkbox]:checked + label {
+				background-color: #3386c0;
+			}
+			
+		</style>
+	</head>
+	<body>
+		
+		<div id='map'></div>
+		
+		<nav id='legend-group' class='legend-group'>
+		
+			<input id='dnd' type='checkbox' name='ltoggle' value='dnd' checked = 'checked'>
+			<label for='dnd'>Do Not Contact</label>
+			<br/><br/>
+			<input id='gmail' type='checkbox' name='ltoggle' value='gmail' checked = 'checked'>
+			<label for='gmail'>Email</label>
+			<br/><br/>
+			<input id='missing' type='checkbox' name='ltoggle' value='missing' checked = 'checked'>
+			<label for='missing'>Missing</label>
+			<br/><br/>
+			<input id='more' type='checkbox' name='ltoggle' value='more' checked = 'checked'>
+			<label for='more'>Other</label>
+			<br/><br/>
+			<input id='phone' type='checkbox' name='ltoggle' value='phone' checked = 'checked'>
+			<label for='phone'>Phone Call</label>
+			<br/><br/>
+			<input id='police' type='checkbox' name='ltoggle' value='police' checked = 'checked'>
+			<label for='police'>Police Report</label>
+			<br/><br/>
+			<input id='walk' type='checkbox' name='ltoggle' value='walk' checked = 'checked'>
+			<label for='walk'>Walk In</label>
+			<br/><br/>
+			<input id='web' type='checkbox' name='ltoggle' value='web' checked = 'checked'>
+			<label for='web'>Web Form</label>
+		</nav>
+		
+		<script>
+		
+			/*
+				For reference:
+				Do Not Contact 	- dnd
+				Email 			- gmail
+				Missing 		- missing
+				Other 			- more
+				Phone Call 		- phone
+				Police Report 	- police
+				Walk In 		- walk
+				Web Form 		- web
+			*/
+				
+			var legendGroup = document.getElementById('legend-group');
+			
+			// creating a mapbox element
+			mapboxgl.accessToken = 'pk.eyJ1Ijoic3Vua3lhbmtpdCIsImEiOiJjamRocGRvMzcwYnltMzNwcnlrMmNhYTZ4In0.Zp4s5HMwGtJTBAckYhTPkg';
+			var map = new mapboxgl.Map({
+				container: 'map',
+				style: 'mapbox://styles/mapbox/basic-v9',
+				zoom: 13,
+				center: [-86.5358347, 39.1646231]
+			});
+			
+			// adding icons to mapbox
+			map.loadImage('icons/dnd.png', function(error, image) {
+				if (error) 
+					throw error;
+				map.addImage('Do Not Contact', image);
+			
+			});
+			map.loadImage('icons/gmail.png', function(error, image) {
+				if (error) 
+					throw error;
+				map.addImage('Email', image);
+			});
+			map.loadImage('icons/missing.png', function(error, image) {
+				if (error) 
+					throw error;
+				map.addImage('Missing', image);
+			
+			});
+			map.loadImage('icons/more.png', function(error, image) {
+				if (error) 
+					throw error;
+				map.addImage('Other', image);
+			
+			});
+			map.loadImage('icons/phone.png', function(error, image) {
+				if (error) 
+					throw error;
+				map.addImage('Phone Call', image);
+			
+			});
+			map.loadImage('icons/police.png', function(error, image) {
+				if (error) 
+					throw error;
+				map.addImage('Police Report', image);
+			
+			});
+			map.loadImage('icons/walk.png', function(error, image) {
+				if (error) 
+					throw error;
+				map.addImage('Walk In', image);
+			
+			});
+			map.loadImage('icons/web.png', function(error, image) {
+				if (error) 
+					throw error;
+				map.addImage('Web Form', image);
+			
+			});
+
+			map.on('load', function () {
+			
+				map.addSource("graffiti", {
+					type: "geojson",
+					data: "data/graffiti_data.geojson"
+				});
+				
+				var legendList = document.getElementById('legend-group');
+				var legends = legendList.getElementsByTagName('input');
+				var legend_labels = legendList.getElementsByTagName('label');
+						
+				for (var i = 0; i < legends.length; i++) {
+					var legend = legends[i];
+					var label = legend_labels[i];
+					var layerID = 'graffiti_' + legend.id;
+					var layerImage = label.textContent;
+					
+					
+					map.addLayer({
+						"id": layerID,
+						"type": "symbol",
+						"source": "graffiti",
+						"layout": {
+							"icon-image": "{source}",
+							"text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+							"text-offset": [0, 0.6],
+							"text-anchor": "top"
+						},
+						"filter": ["==", "source", layerImage]
+					});
+					
+					var popup = new mapboxgl.Popup({
+						closeButton: false,
+						closeOnClick: false
+					});
+					
+					map.on('mouseenter', layerID, function(e) {
+						map.getCanvas().style.cursor = 'pointer';
+
+						popup.setLngLat(e.features[0].geometry.coordinates)
+							.setHTML(e.features[0].properties.description + ", <br/><b>Requested Date: " + e.features[0].properties.requested_datetime + "<br/>Closed Date: " + e.features[0].properties.closed_date + "</b>")
+							.addTo(map);
+					});
+
+					map.on('mouseleave', layerID, function() {
+						map.getCanvas().style.cursor = '';
+						popup.remove();
+					});
+
+					// Update the labels on the map when checkbox is selected or de-selected.
+					legend.addEventListener('change', function(e) {
+						var tempLayer = 'graffiti_'+e.target.id;
+						map.setLayoutProperty(tempLayer, 'visibility',
+							e.target.checked ? 'visible' : 'none');
+					});
+							
+				}
+					
+			});
+					
+		</script>
+
+	</body>
+</html>
