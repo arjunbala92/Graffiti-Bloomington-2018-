@@ -2,228 +2,210 @@
 <html>
 	<head>
 		<meta charset='utf-8' />
-		<title>Graffiti Information</title>
-		<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.0/mapbox-gl.js'></script>
-		<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.0/mapbox-gl.css' rel='stylesheet' />
-		<style>
-			body { 
-				margin:0; 
-				padding:0; 
-			}
-			
-			#map {
-				position:absolute; 
-				top:0; 
-				bottom:0; 
-				width:100%; 
-			}
-			
-			.mapboxgl-popup {
-				max-width: 400px;
-				font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-			}
-			
-			.legend-group {
-				font: 11px/16px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-				font-weight: 600;
-				position: absolute;
-				top: 20px;
-				left: 20px;
-				z-index: 1;
-				border-radius: 2px;
-				width: 120px;
-				color: #fff;
-			}
-			
-			.legend-group input[type=checkbox] {
-				display: none;
-			}
+        <title>Graffiti Information</title>
+        <style>
+            body {
+                background-image: url("images/background1.png");
+            }
+            #left_column {
+                float: left;
+                position: fixed;
+                width: 40%;
+            }
+            #right_column {
+                float: right;
+                width: 60%;
+                background-image: url("images/background1.png");
+            }
+            #map_frame {
+                float: none;
+                width: 98%;
+                height: 1080px;
+                padding: 0px 0px 5px 0px;
+            }
+            #video_div {
+                text-align: center;
+            }
+            #video_frame {
+                width: 80%;
+                height: 480px;
+            }
+            #image_div {
+                text-align: center;
+            }
+            #image_frame {
+                width: 80%;
+            }
+            #article_text {
+                padding: 0px 10px 0px 10px;
+                font-family: 'Lucida Sans';
+                font-size: 12;
+            }
+            .center_text {
+                text-align: center;
+            }
+            .justify_text {
+                text-align: justify;
+            }
+            p {
+                text-align: justify;
+            }
+        </style>
 
-			.legend-group label {
-				border-radius: 3px 3px 3px 3px;
-				background-color: #4ea0da;
-				cursor: pointer;
-				padding: 9px;
-				border-bottom: 1px solid rgba(0, 0, 0, 0.25);
-			}
-			
-			.legend-group input[type=checkbox]:hover {
-				background-color: #3386c0;
-			}
-			
-			.legend-group input[type=checkbox]:checked + label {
-				background-color: #3386c0;
-			}
-			
-		</style>
-	</head>
-	<body>
-		
-		<div id='map'></div>
-		
-		<nav id='legend-group' class='legend-group'>
-		
-			<input id='dnd' type='checkbox' name='ltoggle' value='dnd' checked = 'checked'>
-			<label for='dnd'>Do Not Contact</label>
-			<br/><br/>
-			<input id='gmail' type='checkbox' name='ltoggle' value='gmail' checked = 'checked'>
-			<label for='gmail'>Email</label>
-			<br/><br/>
-			<input id='missing' type='checkbox' name='ltoggle' value='missing' checked = 'checked'>
-			<label for='missing'>Missing</label>
-			<br/><br/>
-			<input id='more' type='checkbox' name='ltoggle' value='more' checked = 'checked'>
-			<label for='more'>Other</label>
-			<br/><br/>
-			<input id='phone' type='checkbox' name='ltoggle' value='phone' checked = 'checked'>
-			<label for='phone'>Phone Call</label>
-			<br/><br/>
-			<input id='police' type='checkbox' name='ltoggle' value='police' checked = 'checked'>
-			<label for='police'>Police Report</label>
-			<br/><br/>
-			<input id='walk' type='checkbox' name='ltoggle' value='walk' checked = 'checked'>
-			<label for='walk'>Walk In</label>
-			<br/><br/>
-			<input id='web' type='checkbox' name='ltoggle' value='web' checked = 'checked'>
-			<label for='web'>Web Form</label>
-		</nav>
-		
-		<script>
-		
-			/*
-				For reference:
-				Do Not Contact 	- dnd
-				Email 			- gmail
-				Missing 		- missing
-				Other 			- more
-				Phone Call 		- phone
-				Police Report 	- police
-				Walk In 		- walk
-				Web Form 		- web
-			*/
-				
-			var legendGroup = document.getElementById('legend-group');
-			
-			// creating a mapbox element
-			mapboxgl.accessToken = 'pk.eyJ1Ijoic3Vua3lhbmtpdCIsImEiOiJjamRocGRvMzcwYnltMzNwcnlrMmNhYTZ4In0.Zp4s5HMwGtJTBAckYhTPkg';
-			var map = new mapboxgl.Map({
-				container: 'map',
-				style: 'mapbox://styles/mapbox/basic-v9',
-				zoom: 13,
-				center: [-86.5358347, 39.1646231]
-			});
-			
-			// adding icons to mapbox
-			map.loadImage('icons/dnd.png', function(error, image) {
-				if (error) 
-					throw error;
-				map.addImage('Do Not Contact', image);
-			
-			});
-			map.loadImage('icons/gmail.png', function(error, image) {
-				if (error) 
-					throw error;
-				map.addImage('Email', image);
-			});
-			map.loadImage('icons/missing.png', function(error, image) {
-				if (error) 
-					throw error;
-				map.addImage('Missing', image);
-			
-			});
-			map.loadImage('icons/more.png', function(error, image) {
-				if (error) 
-					throw error;
-				map.addImage('Other', image);
-			
-			});
-			map.loadImage('icons/phone.png', function(error, image) {
-				if (error) 
-					throw error;
-				map.addImage('Phone Call', image);
-			
-			});
-			map.loadImage('icons/police.png', function(error, image) {
-				if (error) 
-					throw error;
-				map.addImage('Police Report', image);
-			
-			});
-			map.loadImage('icons/walk.png', function(error, image) {
-				if (error) 
-					throw error;
-				map.addImage('Walk In', image);
-			
-			});
-			map.loadImage('icons/web.png', function(error, image) {
-				if (error) 
-					throw error;
-				map.addImage('Web Form', image);
-			
-			});
+        <script>
+            function set_params() {
+                map_frame = document.getElementById("map_frame");
+                //map_frame.height = (window.screen.availHeight * 0.9);
+                map_frame.setAttribute('style', 'height: ' + (window.screen.availHeight * 0.9)+ 'px !important');
 
-			map.on('load', function () {
-			
-				map.addSource("graffiti", {
-					type: "geojson",
-					data: "data/graffiti_data.geojson"
-				});
-				
-				var legendList = document.getElementById('legend-group');
-				var legends = legendList.getElementsByTagName('input');
-				var legend_labels = legendList.getElementsByTagName('label');
-						
-				for (var i = 0; i < legends.length; i++) {
-					var legend = legends[i];
-					var label = legend_labels[i];
-					var layerID = 'graffiti_' + legend.id;
-					var layerImage = label.textContent;
-					
-					
-					map.addLayer({
-						"id": layerID,
-						"type": "symbol",
-						"source": "graffiti",
-						"layout": {
-							"icon-image": "{source}",
-							"text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
-							"text-offset": [0, 0.6],
-							"text-anchor": "top"
-						},
-						"filter": ["==", "source", layerImage]
-					});
-					
-					var popup = new mapboxgl.Popup({
-						closeButton: false,
-						closeOnClick: false
-					});
-					
-					map.on('mouseenter', layerID, function(e) {
-						map.getCanvas().style.cursor = 'pointer';
+                video_frame = document.getElementById("video_frame");
+                //video_frame.height = (window.screen.availHeight * 0.5);
+                video_frame.setAttribute('style', 'height: ' + (window.screen.availHeight * 0.5)+ 'px !important');
 
-						popup.setLngLat(e.features[0].geometry.coordinates)
-							.setHTML(e.features[0].properties.description + ", <br/><b>Requested Date: " + e.features[0].properties.requested_datetime + "<br/>Closed Date: " + e.features[0].properties.closed_date + "</b>")
-							.addTo(map);
-					});
+            }
+        </script> 
+    </head>
 
-					map.on('mouseleave', layerID, function() {
-						map.getCanvas().style.cursor = '';
-						popup.remove();
-					});
+    <body onload="set_params()">
+        <div id = "left_column">
+            <iframe id = "map_frame" src="map.html" class="left_column"></iframe>
+        </div>
 
-					// Update the labels on the map when checkbox is selected or de-selected.
-					legend.addEventListener('change', function(e) {
-						var tempLayer = 'graffiti_'+e.target.id;
-						map.setLayoutProperty(tempLayer, 'visibility',
-							e.target.checked ? 'visible' : 'none');
-					});
-							
-				}
-					
-			});
-					
-		</script>
+        <div id = "right_column">
+            <h1 class = "center_text">Comprensione Graffiato</h1>
+            <h2 class = "center_text">AND “THE DEFACEMENT OF PUBLIC SPACES” TAG ATTACHED TO IT</h2>
+            <h3 class = "center_text">Arjun Balasundaram</h3>
+            <h4 class = "center_text">APRIL 13, 2018</h4>
+            <hr/>
+            <br/>
+            <div id = "article_text">
+                <p>Google defines graffiti as “writing or drawings scribbled, scratched, or sprayed illicitly on a wall or other surface in a public place.” For the average Joe, modern graffiti, at best, strikes as something creative individuals do in their free time. But the art form has been in existence for sometime now and has a rich history, especially in the United States. </p> 
+                <p>The art made one of its earliest significant impacts in the US when, as a sign of disapproval to the US involvement in both the World Wars, an inscription at the fortress of Verdun8 read: </p>
+                </br>Austin White – Chicago, Ill – 1918
+                </br>Austin White – Chicago, Ill – 1945
+                </br>This is the last time I want to write my name here.
+    
+                <p>While traces of the earliest modern graffiti in the US was found in 1920s, the precedent for modern graffiti performed today dates back to the political activists12 and gang members from 1960s. </p>  
+                <p>The earliest graffiti appeared on boxcars and over the years they have branched out to any blank space that provides them and their artwork visibility and exposure, both in big cities and small towns. But many pioneers of the art were not fond of naming their practice as “graffiti” because for them the term meant scratching or crude crawls . Few of them ,even today, still prefer themselves to be addressed as writers. Till date this has been a cause for debate among the artists and there has not been a concrete solution to resolve this conundrum. </p>
+                <p>Irrespective of the conflicting opinions on the nomenclature, from the first modern graffiti writer, Darryl McCray2, to the kid today who creates street art as a manifestation of his or her dreams, from the heavy metal spray can those days to the light weight spray can used today, modern graffiti has come a long way. Starting from a major hub like New York to the random marking in a wall in Bloomington, Indiana, the sole purpose of graffiti artists has remained constant - THEIR CREATION SHOULD BE SEEN. </p>
+                <p>The art form, with roots in ancient Greece, ancient Egypt and the Roman Empire2, has evolved into a medium that encompasses part-hip hop culture, a voice box for political beliefs and a representation of a different form of art which can be performed artistically by those with an inherent interest. Hip-hop culture9 was developed in the 1970s and was used as a platform to voice people’s opinion on the actions and steps taken by the government. And a natural connection between the two grew when modern graffiti came into existence in 1980s and was seen as means to put forward collective or individual opinions that would otherwise not reach the table of concerned authorities. </p>
+                <p>However, the platform in itself is not sufficient to gain prominence and the artistic aspect is critical for the public to take the written message seriously. A tag done with little creativity, would be seen as a piece of work done shabbily and shifts the focus from the actual message. </p>  
+                <p>Like any other art form, graffiti artists need loads and loads of practice right from an young age to master the artwork. But, unlike other forms of art, the passion for the art grows from witnessing the work of graph writers in alleys and street corners around the city. Additionally, there needs to be an inherent interest in the art as it cannot be forced upon an individual and there are hardly any centers that teach the art. </p> 
 
-	</body>
+                </br></br>
+                <div id = "video_div">
+                    <iframe id = "video_frame" src = "https://www.youtube.com/embed/VTzh1CKbONE"></iframe>
+                </div>
+                </br></br>
+                
+                <p>Mike Burchfield, 33, grew up in Bloomington, Indiana and has been practicing the art of graffiti from the time he was 13-years-old. Though he has family commitments now, he goes out and does graffiti when he gets time and the weather is good. </p> 
+                <p> “Twenty year ago, I went to Bloomington High School South in Bloomington and would walk into town and in doing so discovered the old train yard here in Bloomington. The train yard was full of train cars painted with graffiti, really inspired me interested me, brought about a lot of questions that I spent several years trying to answer, ” said Burchfield, recollecting his childhood days and his foray into the world of graffiti. </p>   
+                <p>The interest factor comes from understanding the complex nature of the art and being ready to perform the art that involves paying attention to a lot of nuances. The aforementioned complex nature of the art entails envisioning the final outcome whilst determining the one-dimensional focus or message of the finished piece. Do you intend it to be a message to a fellow graph writer? Do you want it to be a medium to posit your political ideologies? Or do you simply intend it to be an art in its purest form? </p> 
+                <p>Burchfield points out that certain graph writers use their artwork to communicate with fellow writers and it’s a personal choice of the writer if he or she wants to use it as a platform to voice their political beliefs. </p> 
+                
+                </br></br>
+                    
+                <div class='tableauPlaceholder' id='viz1523117533465' style='position: relative'>
+                    <noscript>
+                        <a href='#'>
+                            <img alt='Graffiti Data  in Bloomington ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ar&#47;ArjunGraffitiData&#47;GraffitiDatainBloomington&#47;1_rss.png' style='border: none' />
+                        </a>
+                    </noscript>
+                    <object class='tableauViz'  style='display:none;'>
+                        <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> 
+                        <param name='embed_code_version' value='3' /> 
+                        <param name='site_root' value='' />
+                        <param name='name' value='ArjunGraffitiData&#47;GraffitiDatainBloomington' />
+                        <param name='tabs' value='no' />
+                        <param name='toolbar' value='yes' />
+                        <param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;Ar&#47;ArjunGraffitiData&#47;GraffitiDatainBloomington&#47;1.png' /> 
+                        <param name='animate_transition' value='yes' />
+                        <param name='display_static_image' value='yes' />
+                        <param name='display_spinner' value='yes' />
+                        <param name='display_overlay' value='yes' />
+                        <param name='display_count' value='yes' />
+                    </object>
+                </div>                
+
+                <script type='text/javascript'>                    
+                    var divElement = document.getElementById('viz1523117533465');                   
+                    var vizElement = divElement.getElementsByTagName('object')[0];                    
+                    vizElement.style.width='100%';vizElement.style.height=(divElement.offsetWidth*0.75)+'px';                    
+                    var scriptElement = document.createElement('script');                    
+                    scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';                    
+                    vizElement.parentNode.insertBefore(scriptElement, vizElement);                
+                </script>
+
+                </br></br>
+
+                </br>So, what runs in the mind of an graffiti artist?
+                </br>Malcolm Smith quote
+                <p>While it is obvious for the graffiti artists to consider their work as noble and free-spirited, it would be interesting to establish the reasons for the disconnect between the artists and people outside the graffiti community. In other words, how are the opinions on this particular art form different for the two parties involved, on either side of the border. </p>  
+                <p>The public outside the graffiti community who find it hard to wrap their heads around the motivations of a graph writer. As a result, the art form has, more often than not, been in the news for all the wrong reasons such as destroying public spaces4, spreading hatred and the artists themselves being labelled as anti-social elements. </p> 
+                <p>The disregard for public spaces by the graph writers could be a major driving factor for the non-graffiti community members to not give the art much importance and a reason for them to looked down upon the creators of them. Their point of view is understandable as it would obviously irk people who like their streets to look unblemished and not like the background of a gangster movie! </p> 
+                <p>The gangster reference was intentional as there is a genuine assumption that if an area in a community has been predominantly filled with graffiti work, the presence of gang-related crime5 in the area is assumed. In the past, the state of Indiana had released a bulletin6 informing community members about the ill-effects of gang graffiti and how it leads to increase in other forms of crimes. In 2017, the Graffiti Unit of the Indianapolis Metropolitan Police Department7 had an annual target of erasing or covering 30,000 square feet of graffiti. </p> 
+                <p>But past and present graph writers feel the restriction to practice only in designated areas or “legal walls” deprives them of the entire purpose of the art. </p> 
+                <p> “As far as location is concerned - scouting a location, knowing where you want to do it- it is about visibility and opportunity. So, those two things kind of work in unison or you have to compromise one for the other. If you have a secluded area or you have the opportunity to do it without getting noticed, you take that.  But if you have the opportunity to have some kind of lookout system and you find a location that is front and center where lot of people are going to see your work, then that kind of prioritizes, “ explains Smith as he outlines the thought process of a graffiti artist when finalizing a location. </p> 
+                <p>However, he does not deny that there is always a certain degree of risk involved and that every artist has their own threshold of tolerance. But, he identifies that the main ethic within graph “is to be up and be up all the time. Being up means out, visible, your work is visible.” </p>
+                <p>This anti-social or rebellious cloud that constantly hangs above everything surrounding the art form, over the years, has led to its association with vandalism and the phrase “vandalize properties”. </p>  
+
+                </br></br>
+
+                <div id = "image_div">
+                    <img id = "image_frame" src = "images/word cloud sample.png" />
+                </div>
+
+                </br></br>
+
+                <p>Vandalism translates into “willful or malicious destruction or defacement of public or private property”3 and hence is seen by many as synonyms with the actions of graffiti artists. </p> 
+                <p>The IU professor of Ceramics underlines that the confusion between graffiti and markings in public space, with vandalism as its prime directive, exists because there is the impression that both are done by the same set of artists. He explains that this is not the case and responsible graffiti artists have an unwritten code followed within the community which does not encourage using the art as a vandalism tool. </p> 
+                    <p> “It’s about attracting attention through your artwork but not attracting attention because of how you operate in the public sphere that’s going to cause negative attention to you. If you start hitting and tagging building that are incredibly important monuments like that, you are defacing something that you already respect,” said Smith, a former graffiti artist in his youth in the streets of Michigan. “So there is a code about respect within the graffiti community that isn’t broken.” </p>  
+                <p>While those who intend to vandalize properties target multiple sections of the society, the form of vandalism that attracts immediate attention involves those that has something to do with the current political situation in the city or country. </p> 
+                <p>This sub-section of vandalism might include spray painting a swastika symbol or writing messages associating oneself with the ideologies of a political candidate targeting a particular community based on color, caste and creed. </p>  
+                <p>But, most of the hate-filled messages may not necessarily be thoughts that have been in the heads of the artists for years together and could be manifestations of temporary frustrations with their surroundings during a specific period of time. </p>  
+                <p>Sean Starowitz, Assistant Director of Economic Development for the Arts at the City of Bloomington, has his own opinion on the controversial nature of graffiti based on the two years he has lived in B-town. </p>
+                <p> “There has been an uptake (racist remarks in public spaces) in a lot of communities. Usually it is probably about a, I would assume, a 15-year old ingsty teenager that is probably doing it. I don’t think it is actually coming from a real place yet, “ said Starowitz, a 2014 Charlotte St. Foundation Visual Art Award Fellow22. “It either happens on the lamppost or the B-line and we have couple of instances on public artwork.” </p>
+                <p>This brings us to the role played by the surrounding in the deciding the nature of political graffiti. </p>
+                <p>The environment in which the graffiti artist lives plays a prominent role , especially in deciding the tone of political graffiti put out there. For instance, in a republican or democratic dominated region, the politically-inclined messages, if any, could be (not always) based on supporting the ideologies of either parties (need not necessarily be racist or hateful messages) whereas in a closely contested area, the type of graffiti could be less biased. The results of the 2016 election invited a lot of hateful and bigotry messages against different sections of the community. Indiana, primarily considered a red state, voted for the republican candidates in three of the last four17 presidential elections and the manner in which their victorious presidential candidate ran the 2016 election campaign only boosted their followers into committing more hate crimes and vandalizing properties. </p> 
+                <p>There have been a couple of incidents in Indiana that have received nationwide coverage since the lection. Vandals did not spare the St. David Episcopal church16 in Bean Blossom, Indiana and spray painted “Heil Trump”, a swastika symbol and an anti-gay slur. An Indian couple18 from Indianapolis, who have been in the US for nine years and recently became American citizens, became victims of hate crime for the first time in September, 2017, when vandals spray painted anti-Hindu graffiti and grease marking on their business Signs by Tomorrow. While it is unfair to categorize graffiti artists from rest the state into the same box as these vandals, but the environmental influence must be factored when contemplating the reasons behind such attacks. </p>
+                </br>Bloomington, IN Chapter
+                <p>Graffiti in Bloomington, Indiana, a college town which is an anomaly from the rest of the state in terms of ideologies and has a strong diverse population owing to the presence of a university, has generally been viewed for its artistic credentials and has rarely been subject to controversies. </p> 
+                <p>Burchfield, who has travelled all over the country spray painting his legacy on the walls across different cities and towns, feels Bloomington is a welcoming place for artists to try their trade and there is little room for negative emotions here. </p>
+                <p> “ This (Bloomington) isn’t a place where racism or white supremacy last or have any foothold. Klu Klux Klan (KKK) all the time tries to have rallies here in Bloomington and they always end up cancelling them because they understand the opposition they have here, “ says Burchfield with a smile on his face. “ This isn’t a place that preaches or deals with hate or bigotry or racism because this isn’t a racist place, it is a very interesting place. It is an exception to the rule as far as the state goes. I don’t know anywhere like this in the state.” Video 129</p>
+                <p>Given that Indiana is still one of the states in which KKK is still active19 as of June, 2017 and of late have had largely unsuccessful attempts20 in gathering people to support them in Bloomington, it is further proof that Bloomington is not home to most, if not all, racist  narratives. </p>
+                <p>However, people from different walks of life associated with the art in the city of 84,46521 have contrasting opinions on the controversial nature of the art in recent times. </p> 
+                <p> “I would say that there has been an uptake of racist, I don’t want to call it graffiti because it is not graffiti, it is racist remark in public space. So, there has been an uptake of that, what I would call hate crimes, “ said the Assistant Director of Economic Development for the Arts at the City of Bloomington. “From an artistic perspective, the art police department might think it differently.” </p>   
+                <p>Being a predominantly republican state15 and the general environment of hostility created nationwide for anything non-American, owing to the priorities of the current administration at the center, a powerful tool like graffiti could be one of many tools to drive ideologies and at the same time catch eyeballs. </p> 
+                <p>However, professor Smith who has lived for 17 years in the town with Indiana University’s flagship scenic campus, feels there has not been much rise in terms of controversies surrounding the art and ascertains that, of late, the collective number of graffiti in the city itself has been few and far in between. </p> 
+                <p> “I haven’t seen a lot of action (in Bloomington) go on local crews lately. A lot of participants in the group are aging up , not necessarily aging out, but aging up and they have other priorities in their life like families. “ said the IU professor. </p> 
+                <p>He further went on to add that, “the bug for graph is always there and they will never not go out if they have the opportunity to go out and do a piece.” </p>
+                <p>The supposedly docile and innocuous outlook of the art, which most of the time offers no monetary benefits to the artists apart from a sense of internal satisfaction, in the college town could be attributed to a couple of factors. </p>
+                <p>First, there is a belief that university brings a lot of liberal minds together owing to the plethora of people from different racial backgrounds studying and working at the one location. This in-turn could leave little room for hatred to dominate and engineers a greater degree of acceptance. Second, the lesser the level of hatred or discrimination in a community, the lower are the number of controversial messages put out in the public. </p>
+                <p>But despite the conflicting opinions, most of the controversial plagued graffiti, if any, are done on public spaces and depending on the type of area, different departments of the city government have the responsibility of clearing them out. One such department is the Parks & Recreation department which removes illegal artwork from the 2,275 acres4 of property in the city including 34 parks and a host of other recreation spaces. </p>  
+                <p>Mark Marotz and Dave Fox from the Parks and Recreation team agree that a busy season has them occupied round the clock as they are always on the lookout for tags in the parks around town. </p>
+                </br>Marotz: How many do you think we have in a season?
+                </br>Fox: Oh gosh. Who knows. Its several several.
+                </br>Marotz: Couple hundreds in real season?
+                </br>Fox: Oh, Easy. 
+                <p>Except a few tags that have targeted specific sections of the society like the perennial abusive slurs intended for the police department, most of the hundreds of graffiti removed during a “busy season” are not necessarily provoking messages intended to hurt sentiments. Fox, who has been in the department for 40 plus years now, suggested that these tags are works of individuals “who have nothing better to do with their life.” </p> 
+                <p>From the outlook it may seem that the police department play a crucial part in eradicating or minimizing the impact of graffiti in the city and these might well be the case in larger cities. Graffiti artists in the city have been arrested in the past for placing art in public. </p> 
+                <p>Burchfield who has been convicted in the past for graffiti, details that things could get a lot worse depending on the seriousness of the crime. </p>
+                <p> “Personally, I have been arrested for graffiti. My punishment was a misdemeanor. It was a long drawn out battle were it went from one to 20 charges I believe at one point. But, eventually, after it was all said and done, it was one misdemeanor, “ said the 33-year old artist. “ But, I know people that have been caught for painting trains and it can be a lot more serious than that. It can land you in jail for a felony. Felony is a very serious, it follows you around. It is a pretty serious punishment for placing art on something in my opinion.” </p>
+                <p>Notwithstanding arrests of graffiti artists in this lively Hoosier town in the past, the police department, contrary to many beliefs, have a negligible role in the city. </p>
+                <p>Barring city-run properties, the police department gets notified only when illegal art work are done on private properties without the discretion of the property owner. </p> 
+                <p> “If anyone reports, graffiti would be vandalism, so when people call and report vandalism to their property. We send an officer. The officer will view that and sometime take a picture. Sometimes it is already gone or something like that and so there might not be the evidence gathered, “ said Steve Kellams from the Bloomington Police Department. “But, generally they take photos for evidence purposes, they will get the information of the business owner or the home owner and they will do a case report. Generally, case reports are small because there are normally never any suspects or witnesses to the event.” </p>
+                <p>Kellams corroborates professor Smiths’ version by stating that graffiti is one of the least worries in the city for the department. In such scenarios, the police are seen as a mere “record-keeping” organization. The onus is on the owner of the private property to contact the concerned department for the removal.</p> 
+                <p> “If it is on private property and the property owner wants it removed there is usually, it is called a work track which is a system which anybody can file a complaint. And then we review it and send out a crew to power wash it or paint over it. It just depends on where the tagging happens,” explains Starowitz about the procedure to file complaints for private individuals whose property has been vandalized. </p>  
+                <p>With people still finding it difficult to get a firm grasp on the necessity of this art form (sometimes finding it anti-social), the city government on the lookout to remove the artists’ work on public spaces and the police trying to arrest artists who believe they are pursuing the art the way it is meant to be, the artists must possess a strong will and drive beyond explanation for the art to go out with their spray cans and brushes and do what they do best. But people on either side of the aisle (graffiti and non-graffiti members) are finding it hard to comprehend the opposing opinion on the topic of placing art in public spaces illegally. </p> 
+                    <p> “That’s one thing I don’t understand is to why graffiti happens on other people’s public art. That’s like a conundrum that I am trying to figure out for a long time, I don’t thing I ever will because there is plenty of other places that can exist, right, “ chuckles Starowitz. </p> 
+                <p>This mentality directly contradicts the mindset of a graffiti artist and forms the core of the disagreement between the two parties. </p>  
+                <p> “The primary reason for graffiti is to do it where it is not sanctioned. It’s a apprehending of the world and you are claiming as a member of humanity, a member of the population of the earth, you are saying all space is our space. And that is pretty much the underlying rule governing how graffiti exists, ” said Smith, strongly emphasizing the sole purpose of the art. </p> 
+                <p>However, he goes on to say that the local graffiti codes does not advise them to perform on people’s personal homes, people’s cars and buildings that are of architectural significance for aesthetic reasons and understood and accepted as a monument that is already a work of art. </p>
+                <p>Burchfield passionately summarizes the core discrepancy in the mindset of the public who fail to differentiate between actual graffiti art and the random markings on the streets. </p>   
+                    <p> “There are lot of people that will never take the idea of graffiti seriously. It’s another one of those things that, the word graffiti encompasses so much. It is everything from the 1800 eat s*** on the bathroom stall to the elaborate mural that is on the wall that took somebody days or weeks to do. It’s all the same thing. You get people that cant differentiate those two things. They want them all together and can’t see the mural for the mural because for them graffiti is the bathroom stall wall. It’s one in the same. It’s a waste of time or whatever they feel that it is.” </p>
+                <p> “I don’t think that even with the increase in racist symbols and things happening in graffiti I don’t think the overall idea of graffiti to most people has changed. I think more so than not, a lot of people that aren’t really artistic or don’t really care for those things it’s not going to change their opinion one way or the other, they don’t like it.” </p>
+                <p> “There are lot of people who don’t like it because they don’t understand it,”  signs off Burchfield. </p> 
+            </div>  
+        </div>
+    </body>
 </html>
