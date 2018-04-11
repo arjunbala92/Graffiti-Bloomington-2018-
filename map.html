@@ -4,8 +4,12 @@
 		<meta charset='utf-8' />
 		<title>Graffiti Information</title>
 		<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.0/mapbox-gl.js'></script>
+		
+		/* Include the map frame */
+		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.0/mapbox-gl.js'></script> 
 		<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.44.0/mapbox-gl.css' rel='stylesheet' />
+		
+		
 		<style>
 			body { 
 				margin:0; 
@@ -19,11 +23,13 @@
 				width:100%; 
 			}
 			
+			/* styling for the pop up which has the details */
 			.mapboxgl-popup {
 				max-width: 400px;
 				font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 			}
 			
+			/* styling for the sources (police, call etc) w3 schools */
 			.legend-group {
 				font: 11px/16px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 				font-weight: 600;
@@ -36,10 +42,13 @@
 				color: #fff;
 			}
 			
+			/* hide the checkbox in the legend and display all at the same time */
+			
 			.legend-group input[type=checkbox] {
 				display: none;
 			}
 
+			/* spacing and styling inside the labeled box in the legend */ 
 			.legend-group label {
 				border-radius: 3px 3px 3px 3px;
 				background-color: #4ea0da;
@@ -47,10 +56,12 @@
 				padding: 9px;
 				border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 			}
+			/* highlights each source in the legend when you hover */
 			
 			.legend-group input[type=checkbox]:hover {
 				background-color: #3386c0;
 			}
+			/* color change when you click a source in the label */
 			
 			.legend-group input[type=checkbox]:checked + label {
 				background-color: #3386c0;
@@ -60,8 +71,10 @@
 	</head>
 	<body>
 		
+		
 		<div id='map'></div>
 		
+		/* code begins for legend */
 		<nav id='legend-group' class='legend-group'>
 		
 			<input id='dnd' type='checkbox' name='ltoggle' value='dnd' checked = 'checked'>
@@ -89,6 +102,9 @@
 			<label for='web'>Web Form</label>
 		</nav>
 		
+		/* end of code for legend */
+		
+		
 		<script>
 		
 			/*
@@ -105,7 +121,7 @@
 				
 			var legendGroup = document.getElementById('legend-group');
 			
-			// creating a mapbox element
+			// creating a mapbox element, access key given by mapbox to use their framework, section to create map 
 			mapboxgl.accessToken = 'pk.eyJ1Ijoic3Vua3lhbmtpdCIsImEiOiJjamRocGRvMzcwYnltMzNwcnlrMmNhYTZ4In0.Zp4s5HMwGtJTBAckYhTPkg';
 			var map = new mapboxgl.Map({
 				container: 'map',
@@ -114,7 +130,7 @@
 				center: [-86.5358347, 39.1646231]
 			});
 			
-			// adding icons to mapbox
+			// adding icons to mapbox, to load the images from the computer to the webpage
 			map.loadImage('icons/dnd.png', function(error, image) {
 				if (error) 
 					throw error;
@@ -164,22 +180,29 @@
 			});
 
 			map.on('load', function () {
+				
+				/* converted the .csv file to .geojson file using URL, importing that geojson file from computer
+			          any map fram uses geojson (used for mapbox) format (lat, long, data values (columns in .csv))
 			
 				map.addSource("graffiti", {
 					type: "geojson",
 					data: "data/graffiti_data.geojson"
 				});
 				
+				
+				
 				var legendList = document.getElementById('legend-group');
 				var legends = legendList.getElementsByTagName('input');
 				var legend_labels = legendList.getElementsByTagName('label');
+				
 						
 				for (var i = 0; i < legends.length; i++) {
 					var legend = legends[i];
 					var label = legend_labels[i];
-					var layerID = 'graffiti_' + legend.id;
-					var layerImage = label.textContent;
-					
+					var layerID = 'graffiti_' + legend.id; // adding a layer in the map for each source
+					var layerImage = label.textContent; // getting the exact name for each source
+						
+						
 					
 					map.addLayer({
 						"id": layerID,
@@ -187,17 +210,21 @@
 						"source": "graffiti",
 						"layout": {
 							"icon-image": "{source}",
-							"text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"],
+							"text-font": ["Open Sans Semibold", "Arial Unicode MS Bold"], // font for hover text
 							"text-offset": [0, 0.6],
 							"text-anchor": "top"
 						},
 						"filter": ["==", "source", layerImage]
 					});
 					
+					//background of popup
+					//till this point images are added corresponding to the coordinates from the .geojson 
 					var popup = new mapboxgl.Popup({
 						closeButton: false,
 						closeOnClick: false
 					});
+					
+					/* what to display in the hover text
 					
 					map.on('mouseenter', layerID, function(e) {
 						map.getCanvas().style.cursor = 'pointer';
@@ -207,6 +234,7 @@
 							.addTo(map);
 					});
 
+					// to remove text box once you leave
 					map.on('mouseleave', layerID, function() {
 						map.getCanvas().style.cursor = '';
 						popup.remove();
@@ -216,7 +244,7 @@
 					legend.addEventListener('change', function(e) {
 						var tempLayer = 'graffiti_'+e.target.id;
 						map.setLayoutProperty(tempLayer, 'visibility',
-							e.target.checked ? 'visible' : 'none');
+							e.target.checked ? 'visible' : 'none'); // to display specific points when a source is selected 
 					});
 							
 				}
